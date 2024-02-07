@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useParams, useRouter } from 'next/navigation';
 import { ChannelType } from '@prisma/client';
+import { useEffect } from 'react';
 
 import {
   Dialog,
@@ -42,26 +43,35 @@ const formSchema = z.object({
     .min(1, {
       message: 'Channel name is required.',
     })
-    .refine((name) => name !== 'general', {
+    .refine((name) => name.toLowerCase() !== 'general', {
       message: 'Channel name cannot be general',
     }),
   type: z.nativeEnum(ChannelType),
 });
 
 export const CreateChannelModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
   const params = useParams();
 
   const isModalOpen = isOpen && type === 'createChannel';
+  const { channelType } = data;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
+
+  useEffect(() => {
+    if (channelType) {
+      form.setValue('type', channelType);
+    } else {
+      form.setValue('type', ChannelType.TEXT);
+    }
+  }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting;
 

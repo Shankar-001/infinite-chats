@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { Check, Copy, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import {
   Dialog,
@@ -22,6 +23,8 @@ export const InviteModal = () => {
 
   const isModalOpen = isOpen && type === 'invite';
   const { server } = data;
+
+  const router = useRouter();
 
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +46,7 @@ export const InviteModal = () => {
       const response = await axios.patch(
         `/api/servers/${server?.id}/invite-code`
       );
+      router.refresh();
       onOpen('invite', { server: response.data });
     } catch (error) {
       console.log(error);
