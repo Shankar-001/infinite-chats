@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       return new NextResponse('Server ID is missing', { status: 400 });
     }
 
-    if (name === 'general') {
+    if (name.toLowerCase() === 'general') {
       return new NextResponse('Name cannot be general', { status: 400 });
     }
 
