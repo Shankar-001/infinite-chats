@@ -30,12 +30,12 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen(true);
+        setOpen((open) => !open);
       }
     };
 
     document.addEventListener('keydown', down);
-    return () => window.removeEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
   }, []);
 
   const onClick = ({
